@@ -41,5 +41,16 @@ $.fn.Directional({
 });
 ```
 
+### CheckIsTv
+#### Activate the plugin only in TV Devices. (Need the plugin [IsSmartTV.js](https://github.com/jeankassio/IsSmartTv.js).)
+
+
+
+```javascript
+$.fn.Directional({
+  checkistv: true
+});
+```
+
 ## Note
 ### Feel free to explore and customize the jQuery.Directional plugin to enhance your webpage's navigation experience.

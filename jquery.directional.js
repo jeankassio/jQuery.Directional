@@ -1,3 +1,17 @@
+/*!
+ * jQUery.Directional v1.0.9
+ * by Jean Kássio
+ *
+ * More info:
+ * https://github.com/jeankassio
+ *
+ * Copyright Jean Kássio
+ * Released under the MIT license
+ * https://github.com/jeankassio/jQuery.Directional/blob/main/LICENSE
+ *
+ * @preserve
+ */
+
 (function($){
 
   $.fn.Directional = function(options){
@@ -5,10 +19,15 @@
 	let defaults = {
 		rewriteindexes: false,
 		selectlement: false,
-		clickonenter: false
+		clickonenter: false,
+		checkistv: false
 	};
 	
 	let settings = $.extend(defaults, options);
+	
+	if(settings.checkistv && is?.SmartTV?.() === false){
+		return false;
+	}
 	
 	if(settings.rewriteindexes){
 		ReWriteIndexes();
@@ -142,14 +161,6 @@
 			const $isSame = ($(document.activeElement).attr('tabindex') !== $(this).attr('tabindex'));
 			const $toWidth = ((($bound.left - $active.left) < ($active.width)) && (($active.right - $bound.right) < ($active.width)));
 			
-			
-			
-			if($(this).hasClass("d-flex")){
-				console.log($active.top);
-				console.log($bound.top);
-				console.log($(this).html());
-			}
-			
 			return $posIndex && $toHeigth && $isSame;		
 		});
 		
@@ -158,13 +169,8 @@
 		
 		$.each($tbIndex, function(i, obj){
 			
-			console.log(obj);
-			
 			const $bound = GetBound($(obj));
 			const $distance = CalculateDistance($active.left, $active.top, $bound.left, ($bound.top + $bound.height));
-			
-			console.log($distance);
-			console.log($bound);
 			
 			if(typeof $el != 'undefined'){
 				
@@ -181,7 +187,6 @@
 		});
 		
 		if(typeof $el != 'undefined' && $el.length > 0){
-			console.log($el);
 			$el.focus();
 			window.scrollTo({ top: ($el.offset().top + ($el.height() / 2) - ($(window).height() / 2)), behavior: "smooth" });
 		}
@@ -209,8 +214,6 @@
 		
 		$.each($tbIndex, function(i, obj){
 			
-			console.log(obj);
-			
 			const $bound = GetBound($(obj));
 			const $distance = CalculateDistance($active.left, $active.top, $bound.left, $bound.top);
 			
@@ -229,7 +232,6 @@
 		});
 		
 		if(typeof $el != 'undefined' && $el.length > 0){
-			console.log($el);
 			$el.focus();
 			window.scrollTo({ top: ($el.offset().top + ($el.height() / 2) - ($(window).height() / 2)), behavior: "smooth" });
 		}
@@ -252,26 +254,36 @@
 	
 	function Coordinates(el){
 		let rect = el.getBoundingClientRect();
-		/*
+		
 		rect.top = GetOffsetTop(el) - window.scrollY;
 		rect.left = GetOffsetLeft(el) - window.scrollX;
 		rect.bottom = rect.top + el.offsetHeight;
 		rect.right = rect.left + el.offsetWidth;
-		*/
+		
 		return rect;
 	}
 	
+	$(document).on('focusout', '[tabindex]', function(){
+		
+		$tbIndex = $(this).attr('tabindex');
+		
+		setTimeout(function(){
+		
+			var attr = $(document.activeElement).attr('tabindex');
+			
+			if(typeof attr == 'undefined' || attr == false){
+				
+				MoveToX(false);
+				MoveToX(true);
+				
+			}
+			
+		}, 10);
+		
+	});
 	
     return this;
 	
   };
-
-  $(document).ready(function(){
-    /*
-	$.fn.Directional({
-		rewriteIndexes: true
-	});
-	*/
-  });
-
+  
 })(jQuery);
